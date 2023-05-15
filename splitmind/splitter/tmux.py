@@ -92,7 +92,13 @@ class Tmux():
 
     def __init__(self, cmd="/bin/cat -"):
         self.cmd = cmd
-        self.panes = [TmuxSplit(os.environ["TMUX_PANE"], None, "main", {}) ]
+        # NOT ELEGANT
+        # you can use `of="first"` to operate the firse pane (id=0),
+        # and use `of="main"` to operate the pane started by `gdb.attach`.
+        self.panes = [
+            TmuxSplit("0", None, "first", {}),
+            TmuxSplit(os.environ["TMUX_PANE"], None, "main", {}),
+        ]
         self._saved_tmux_options = tmux_window_options()
         if not [o for o in self._saved_tmux_options if o.startswith("pane-border-status")]:
             self._saved_tmux_options.append("pane-border-status off")
